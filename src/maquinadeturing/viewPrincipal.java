@@ -462,7 +462,8 @@ public class viewPrincipal extends javax.swing.JFrame {
         }
     }
     
-public void teste_duas_fitas_sentenca(){     
+public void teste_duas_fitas_sentenca(){    
+		//Teste com duas fitas
     	
         estadoAtual = estadosIniciais[0];
         
