@@ -23,6 +23,7 @@ public class viewPrincipal extends javax.swing.JFrame {
     String[] estadosIniciais;
     String[] estadosFinais;
     char[] sentenca;
+    char[] sentencab;
     String estadoAtual;
     String teste;
 
@@ -199,7 +200,7 @@ public class viewPrincipal extends javax.swing.JFrame {
                 estadosFinais = tratador(txtEstadoFinal.getText());
                 
                 if(!estadosIniciais[0].isEmpty() && !estadosFinais[0].isEmpty() && !estados[0].isEmpty() && !alfabeto[0].isEmpty()) {
-                    teste_duas_fitas_sentenca();
+                	teste_duas_fitas_sentenca();
                 }else {
                 	JOptionPane.showMessageDialog(null, "Adicione as informações do formulário e a tabela de transições");
                 }                
@@ -467,65 +468,80 @@ public void teste_duas_fitas_sentenca(){
     	
         estadoAtual = estadosIniciais[0];
         
-        for(int z = 0; z < tblSentecas.getRowCount(); z++){
-            String aux = leituraTblSentencas(z);
-            aux += "#";
-            sentenca = aux.toCharArray();
-            int i = 0;
-            while(i < sentenca.length){
-                boolean flag = false;
-                for(int j = 0; j <= tblTransicoes.getRowCount(); j++){
-                    if(j == tblTransicoes.getRowCount()) break;        
-                    
-                    if(estadoAtual.equals(leituraTblTransicoes(j,0)) && leituraTblTransicoes(j, 1).equals(Character.toString(sentenca[i]))){
-                        flag = true;
-                        estadoAtual = leituraTblTransicoes(j, 2);
-                        String aux2 = leituraTblTransicoes(j, 3);
-                        
-                        if(!aux2.contains("#")){
-                            sentenca[i] = aux2.charAt(0);
-                        }
-                        
-                        switch (leituraTblTransicoes(j, 4)) {
-                            case "R":
-                                i++;
-                                break;
-                            case "L":
-                                i--;
-                                break;             
-                            case "S":
-                                break;
-                            default:
-                                break;
-                        }
-                    }              
-                    if(flag) break;          
-                }
+        for(int z = 0; z < tblSentecas.getRowCount(); z += 2){
+        	if(tblSentecas.getRowCount() % 2 == 0) {
+                String aux = leituraTblSentencas(z);
+                String auxb = leituraTblSentencas(z+1);
+                aux += "#";
+                auxb += "#";
+                sentenca = aux.toCharArray();
+                sentencab = auxb.toCharArray();
+                transicoes(sentenca, z);
+                transicoes(sentencab, (z+1));
+        	}else {
+        		JOptionPane.showMessageDialog(btnIniciar, "Entradas apenas em pares, adicione mais uma sentença!");    
+        		break;
+        	}
+            
+        }
+    }
+
+	public void transicoes(char[] sentenca, int z) {
+		System.out.println(z);
+		int i = 0;
+        while(i < sentenca.length){
+            boolean flag = false;
+            for(int j = 0; j <= tblTransicoes.getRowCount(); j++){
+                if(j == tblTransicoes.getRowCount()) break;        
                 
-                if(!flag){
-                    boolean ef = false;
-                    for(String estadoFinal : estadosFinais){
-                        if(estadoFinal.equals(estadoAtual)) {
-                            ef = true;
+                if(estadoAtual.equals(leituraTblTransicoes(j,0)) && leituraTblTransicoes(j, 1).equals(Character.toString(sentenca[i]))){
+                    flag = true;
+                    estadoAtual = leituraTblTransicoes(j, 2);
+                    String aux2 = leituraTblTransicoes(j, 3);
+                    
+                    if(!aux2.contains("#")){
+                        sentenca[i] = aux2.charAt(0);
+                    }
+                    
+                    switch (leituraTblTransicoes(j, 4)) {
+                        case "R":
+                            i++;
                             break;
-                        }
+                        case "L":
+                            i--;
+                            break;             
+                        case "S":
+                            break;
+                        default:
+                            break;
                     }
-                    if(ef){
-                        tblSaida.setValueAt("Aceitou", z, 0);
-                        teste = String.copyValueOf(sentenca);
-                        teste = teste.substring(0, teste.length() - 1);
-                        tblSaida.setValueAt(teste, z, 1);
-                        i = sentenca.length + 1;
-                        estadoAtual = estadoAtual = estadosIniciais[0];
-                    }else{
-                        tblSaida.setValueAt("Recusou", z, 0);
-                        i = sentenca.length + 1;
-                        estadoAtual = estadoAtual = estadosIniciais[0];
+                }              
+                if(flag) break;          
+            }
+            
+            if(!flag){
+                boolean ef = false;
+                for(String estadoFinal : estadosFinais){
+                    if(estadoFinal.equals(estadoAtual)) {
+                        ef = true;
+                        break;
                     }
+                }
+                if(ef){
+                    tblSaida.setValueAt("Aceitou", z, 0);
+                    teste = String.copyValueOf(sentenca);
+                    teste = teste.substring(0, teste.length() - 1);
+                    tblSaida.setValueAt(teste, z, 1);
+                    i = sentenca.length + 1;
+                    estadoAtual = estadoAtual = estadosIniciais[0];
+                }else{
+                    tblSaida.setValueAt("Recusou", z, 0);
+                    i = sentenca.length + 1;
+                    estadoAtual = estadoAtual = estadosIniciais[0];
                 }
             }
         }
-    }
+	}
     
     public String leituraTblSentencas(int linha){
         String sentencas = tblSentecas.getValueAt(linha, 0).toString();
