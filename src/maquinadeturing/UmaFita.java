@@ -15,7 +15,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class viewPrincipal extends javax.swing.JFrame {
+public class UmaFita extends javax.swing.JFrame {
     
     String[] estados;
     String[] alfabeto;
@@ -27,7 +27,7 @@ public class viewPrincipal extends javax.swing.JFrame {
     String estadoAtual;
     String teste;
 
-    public viewPrincipal() {
+    public UmaFita() {
     	getContentPane().setBackground(Color.DARK_GRAY);
     	setBackground(Color.DARK_GRAY);
     	setAlwaysOnTop(true);
@@ -181,34 +181,15 @@ public class viewPrincipal extends javax.swing.JFrame {
                     }
                 });
         btnIniciar = new javax.swing.JButton();
-        btnIniciar.setBackground(Color.LIGHT_GRAY);
-        
-                btnIniciar.setFont(new Font("Tahoma", Font.BOLD, 11)); // NOI18N
-                btnIniciar.setText("Iniciar fita");
-                btnIniciar.addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        btnIniciarActionPerformed(evt);
-                    }
-                });
-        
-        JButton btnniciar2Fitas = new JButton();
-        btnniciar2Fitas.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		estados = tratador(txtEstados.getText());
-                alfabeto = tratador(txtAlfabeto.getText());
-                estadosIniciais = tratador(txtEstadoInicial.getText());
-                estadosFinais = tratador(txtEstadoFinal.getText());
-                
-                if(!estadosIniciais[0].isEmpty() && !estadosFinais[0].isEmpty() && !estados[0].isEmpty() && !alfabeto[0].isEmpty()) {
-                	teste_duas_fitas_sentenca();
-                }else {
-                	JOptionPane.showMessageDialog(null, "Adicione as informações do formulário e a tabela de transições");
-                }                
-        	}
+        btnIniciar.setBackground(Color.LIGHT_GRAY);        
+        btnIniciar.setFont(new Font("Tahoma", Font.BOLD, 11)); // NOI18N
+        btnIniciar.setText("Iniciar");
+        btnIniciar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIniciarActionPerformed(evt);
+            }
         });
-        btnniciar2Fitas.setText("Iniciar duas fitas");
-        btnniciar2Fitas.setFont(new Font("Dialog", Font.BOLD, 11));
-        btnniciar2Fitas.setBackground(Color.LIGHT_GRAY);
+        
 
         javax.swing.GroupLayout panel_principalLayout = new javax.swing.GroupLayout(panel_principal);
         panel_principalLayout.setHorizontalGroup(
@@ -226,7 +207,6 @@ public class viewPrincipal extends javax.swing.JFrame {
         					.addPreferredGap(ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
         					.addComponent(btnIniciar)
         					.addGap(42)
-        					.addComponent(btnniciar2Fitas, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
         					.addGap(26)
         					.addComponent(btnLimpar, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
         					.addGap(82)
@@ -283,7 +263,6 @@ public class viewPrincipal extends javax.swing.JFrame {
         			.addGroup(panel_principalLayout.createParallelGroup(Alignment.BASELINE)
         				.addComponent(jLabel_sentencas)
         				.addComponent(btnMaisLinhaSentencas)
-        				.addComponent(btnniciar2Fitas, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
         				.addComponent(btnIniciar)
         				.addComponent(btnLimpar))
         			.addGap(11)
@@ -342,7 +321,7 @@ public class viewPrincipal extends javax.swing.JFrame {
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         this.dispose();
         limpaVariaveis();
-        new viewPrincipal().setVisible(true);
+        new UmaFita().setVisible(true);
     }//GEN-LAST:event_btnLimparActionPerformed
 
     public void completaCampos(){
@@ -400,7 +379,6 @@ public class viewPrincipal extends javax.swing.JFrame {
     }
     
     public void teste_sentenca(){     
-    	
         estadoAtual = estadosIniciais[0];
         
         for(int z = 0; z < tblSentecas.getRowCount(); z++){
@@ -452,96 +430,18 @@ public class viewPrincipal extends javax.swing.JFrame {
                         teste = teste.substring(0, teste.length() - 1);
                         tblSaida.setValueAt(teste, z, 1);
                         i = sentenca.length + 1;
-                        estadoAtual = estadoAtual = estadosIniciais[0];
+                        estadoAtual = estadosIniciais[0];
                     }else{
                         tblSaida.setValueAt("Recusou", z, 0);
                         i = sentenca.length + 1;
-                        estadoAtual = estadoAtual = estadosIniciais[0];
+                        estadoAtual = estadosIniciais[0];
                     }
                 }
             }
         }
     }
     
-public void teste_duas_fitas_sentenca(){    
-		//Teste com duas fitas
-    	
-        estadoAtual = estadosIniciais[0];
-        
-        for(int z = 0; z < tblSentecas.getRowCount(); z += 2){
-        	if(tblSentecas.getRowCount() % 2 == 0) {
-                String aux = leituraTblSentencas(z);
-                String auxb = leituraTblSentencas(z+1);
-                aux += "#";
-                auxb += "#";
-                sentenca = aux.toCharArray();
-                sentencab = auxb.toCharArray();
-                transicoes(sentenca, z);
-                transicoes(sentencab, (z+1));
-        	}else {
-        		JOptionPane.showMessageDialog(btnIniciar, "Entradas apenas em pares, adicione mais uma sentença!");    
-        		break;
-        	}
-            
-        }
-    }
 
-	public void transicoes(char[] sentenca, int z) {
-		System.out.println(z);
-		int i = 0;
-        while(i < sentenca.length){
-            boolean flag = false;
-            for(int j = 0; j <= tblTransicoes.getRowCount(); j++){
-                if(j == tblTransicoes.getRowCount()) break;        
-                
-                if(estadoAtual.equals(leituraTblTransicoes(j,0)) && leituraTblTransicoes(j, 1).equals(Character.toString(sentenca[i]))){
-                    flag = true;
-                    estadoAtual = leituraTblTransicoes(j, 2);
-                    String aux2 = leituraTblTransicoes(j, 3);
-                    
-                    if(!aux2.contains("#")){
-                        sentenca[i] = aux2.charAt(0);
-                    }
-                    
-                    switch (leituraTblTransicoes(j, 4)) {
-                        case "R":
-                            i++;
-                            break;
-                        case "L":
-                            i--;
-                            break;             
-                        case "S":
-                            break;
-                        default:
-                            break;
-                    }
-                }              
-                if(flag) break;          
-            }
-            
-            if(!flag){
-                boolean ef = false;
-                for(String estadoFinal : estadosFinais){
-                    if(estadoFinal.equals(estadoAtual)) {
-                        ef = true;
-                        break;
-                    }
-                }
-                if(ef){
-                    tblSaida.setValueAt("Aceitou", z, 0);
-                    teste = String.copyValueOf(sentenca);
-                    teste = teste.substring(0, teste.length() - 1);
-                    tblSaida.setValueAt(teste, z, 1);
-                    i = sentenca.length + 1;
-                    estadoAtual = estadoAtual = estadosIniciais[0];
-                }else{
-                    tblSaida.setValueAt("Recusou", z, 0);
-                    i = sentenca.length + 1;
-                    estadoAtual = estadoAtual = estadosIniciais[0];
-                }
-            }
-        }
-	}
     
     public String leituraTblSentencas(int linha){
         String sentencas = tblSentecas.getValueAt(linha, 0).toString();
@@ -562,26 +462,13 @@ public void teste_duas_fitas_sentenca(){
         String estadoFinal = "";    
         String transicoes = "";
     }
-    
-//    private boolean testaConteudoTabela(){
-//        boolean teste = true;
-//        for(int i = 0; i < tblTransicoes.getRowCount(); i++){
-//            for(int j = 0; j < tblTransicoes.getColumnCount(); j++){
-//                if(tblTransicoes.getValueAt(i,j) == ""){
-//                    teste = false;
-//                    break;
-//                }
-//            }
-//        }
-//        return teste;
-//    }
    
         
     public static void main(String args[]) {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new viewPrincipal().setVisible(true);
+                new UmaFita().setVisible(true);
             }
         });
     }
