@@ -22,10 +22,12 @@ public class DuasFitas extends javax.swing.JFrame {
     String[] alfabetoCaractereVazio;
     String[] estadosIniciais;
     String[] estadosFinais;
-    char[] sentenca;
-    char[] sentencab;
+    char[] sentenca1;
+    char[] sentenca2;
     String estadoAtual;
     String teste;
+    String estadoAtual2;
+    String teste2;
 
     public DuasFitas() {
     	getContentPane().setBackground(Color.DARK_GRAY);
@@ -50,9 +52,13 @@ public class DuasFitas extends javax.swing.JFrame {
         jLabel_transicoes = new javax.swing.JLabel();
         jLabel_transicoes.setForeground(Color.WHITE);
         txtEstados = new javax.swing.JTextField();
+        txtEstados.setText("q0,q1,q2");
         txtAlfabeto = new javax.swing.JTextField();
+        txtAlfabeto.setText("1,0,2,g,o,l,&");
         txtEstadoInicial = new javax.swing.JTextField();
+        txtEstadoInicial.setText("q0");
         txtEstadoFinal = new javax.swing.JTextField();
+        txtEstadoFinal.setText("q2");
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTransicoes = new javax.swing.JTable();
         btnMaisLinhaTransicoes = new javax.swing.JButton();
@@ -102,14 +108,13 @@ public class DuasFitas extends javax.swing.JFrame {
         tblTransicoes.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
         tblTransicoes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"","","","",""}/*,
-                {"","","","",""},
-                {"","","","",""},
-                {"","","","",""},
-                {"","","","",""}*/
+                {"q0 - q0","1 - &","q0 - q0","1 - g","R - R"},
+                {"q0 - q0","0 - &","q1 - q1","0 - o","R - R"},
+                {"q1 - q1","0 - &","q1 - q1","0 - o","R - R"},
+                {"q1 - q1","2 - &","q2 - q2","2 - l","R - S"},
             },
             new String [] {
-                "Estado atual", "Caractere de leitura", "Estado futuro", "Caractere de escrita", "Movimento do cabeçote"
+                "Estado atual (1 - 2)", "Caractere de leitura", "Estado futuro", "Caractere de escrita", "Movimento do cabeçote"
             }
         ));
         tblTransicoes.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -128,20 +133,12 @@ public class DuasFitas extends javax.swing.JFrame {
 
         tblSentecas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {""}
+                {"1100002", "&&&&&&&"}
             },
             new String [] {
-                "Sentencas"
+                "Sentenca 1", "Sentenca 2"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        ));
         tblSentecas.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 tblSentecasKeyPressed(evt);
@@ -161,10 +158,10 @@ public class DuasFitas extends javax.swing.JFrame {
 
         tblSaida.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null}
+                {null, null, null, null}
             },
             new String [] {
-                "Resultado", "Saida"
+                "Resultado 1", "Saida 1", "Resultado 2", "Saida 2"
             }
         ));
         tblSaida.setEnabled(false);
@@ -323,27 +320,6 @@ public class DuasFitas extends javax.swing.JFrame {
         limpaVariaveis();
         new DuasFitas().setVisible(true);
     }//GEN-LAST:event_btnLimparActionPerformed
-
-    public void completaCampos(){
-        String eEstados = "";
-        String aAlfabeto = "";
-        String aAlfabetoCar = "";
-        for(int i = 0; i < tblTransicoes.getRowCount(); i++){
-            if(!eEstados.contains(leituraTblTransicoes(i,0))) eEstados += leituraTblTransicoes(i,0)+",";
-            if(!eEstados.contains(leituraTblTransicoes(i,2))) eEstados += leituraTblTransicoes(i,2)+",";
-            
-            if(!aAlfabeto.contains(leituraTblTransicoes(i,1)) && !"#".equals(leituraTblTransicoes(i,1))) aAlfabeto += leituraTblTransicoes(i,1)+",";
-            if(!aAlfabeto.contains(leituraTblTransicoes(i,3)) && !"#".equals(leituraTblTransicoes(i,3))) aAlfabeto += leituraTblTransicoes(i,3)+",";
-            
-            if(!aAlfabetoCar.contains(leituraTblTransicoes(i,1))) aAlfabetoCar += leituraTblTransicoes(i,1)+",";
-            if(!aAlfabetoCar.contains(leituraTblTransicoes(i,3))) aAlfabetoCar += leituraTblTransicoes(i,3)+",";
-        }
-        eEstados = eEstados.substring(0, eEstados.length());
-        aAlfabeto = aAlfabeto.substring(0, aAlfabeto.length() - 1);
-        aAlfabetoCar = aAlfabetoCar.substring(0, aAlfabetoCar.length() - 1);
-        txtEstados.setText(eEstados);
-        txtAlfabeto.setText(aAlfabeto);
-    }
     
     private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
         estados = tratador(txtEstados.getText());
@@ -352,7 +328,7 @@ public class DuasFitas extends javax.swing.JFrame {
         estadosFinais = tratador(txtEstadoFinal.getText());
         
         if(!estadosIniciais[0].isEmpty() && !estadosFinais[0].isEmpty() && !estados[0].isEmpty() && !alfabeto[0].isEmpty()) {
-        	teste_sentenca();
+        	teste_sentencas();
         }else {
         	JOptionPane.showMessageDialog(null, "Adicione as informações do formulário e a tabela de transições");
         }  
@@ -378,29 +354,47 @@ public class DuasFitas extends javax.swing.JFrame {
         return arrayValores;
     }
     
-    public void teste_sentenca(){     
+    private String tratadorTransicoes(String transicao, int posicao){
+        String[] arrayValores = transicao.split(" - ");
+        return arrayValores[posicao].toString();
+        
+    }
+    
+    public void teste_sentencas(){    
         estadoAtual = estadosIniciais[0];
+        estadoAtual2 = estadosIniciais[0];
         
         for(int z = 0; z < tblSentecas.getRowCount(); z++){
-            String aux = leituraTblSentencas(z);
+            String aux = leituraTblSentencas(z, 0);
+            String auxx = leituraTblSentencas(z, 1);
             aux += "#";
-            sentenca = aux.toCharArray();
+            auxx += "#";
+            sentenca1 = aux.toCharArray();
+            sentenca2 = auxx.toCharArray();
             int i = 0;
-            while(i < sentenca.length){
+            
+            while(i < sentenca1.length){
                 boolean flag = false;
                 for(int j = 0; j <= tblTransicoes.getRowCount(); j++){
-                    if(j == tblTransicoes.getRowCount()) break;        
+                    if(j == tblTransicoes.getRowCount()) break;
                     
-                    if(estadoAtual.equals(leituraTblTransicoes(j,0)) && leituraTblTransicoes(j, 1).equals(Character.toString(sentenca[i]))){
+                    if(
+                    		estadoAtual.equals(tratadorTransicoes(leituraTblTransicoes(j,0), 0)) && 
+                    		tratadorTransicoes(leituraTblTransicoes(j,1), 0).equals(Character.toString(sentenca1[i])) &&
+                    		estadoAtual2.equals(tratadorTransicoes(leituraTblTransicoes(j,0), 1)) && 
+                    		tratadorTransicoes(leituraTblTransicoes(j,1), 1).equals(Character.toString(sentenca2[i]))
+                    ){
                         flag = true;
-                        estadoAtual = leituraTblTransicoes(j, 2);
-                        String aux2 = leituraTblTransicoes(j, 3);
-                        
-                        if(!aux2.contains("#")){
-                            sentenca[i] = aux2.charAt(0);
+                        estadoAtual = tratadorTransicoes(leituraTblTransicoes(j,2), 0);
+                        String aux2 = tratadorTransicoes(leituraTblTransicoes(j,3), 0);
+                        estadoAtual2 = tratadorTransicoes(leituraTblTransicoes(j,2), 1);
+                        String aux22 = tratadorTransicoes(leituraTblTransicoes(j,3), 1);
+                        if(!aux2.contains("#") && !aux22.contains("#")){
+                            sentenca1[i] = aux2.charAt(0);
+                            sentenca2[i] = aux22.charAt(0);
                         }
                         
-                        switch (leituraTblTransicoes(j, 4)) {
+                        switch (tratadorTransicoes(leituraTblTransicoes(j,4), 0)) {
                             case "R":
                                 i++;
                                 break;
@@ -412,6 +406,18 @@ public class DuasFitas extends javax.swing.JFrame {
                             default:
                                 break;
                         }
+                        switch (tratadorTransicoes(leituraTblTransicoes(j,4), 1)) {
+	                        case "R":
+	                            i++;
+	                            break;
+	                        case "L":
+	                            i--;
+	                            break;             
+	                        case "S":
+	                            break;
+	                        default:
+	                            break;
+	                    }
                     }              
                     if(flag) break;          
                 }
@@ -419,32 +425,46 @@ public class DuasFitas extends javax.swing.JFrame {
                 if(!flag){
                     boolean ef = false;
                     for(String estadoFinal : estadosFinais){
-                        if(estadoFinal.equals(estadoAtual)) {
+                        if(estadoFinal.equals(estadoAtual) && estadoFinal.equals(estadoAtual2)) {
                             ef = true;
                             break;
                         }
                     }
                     if(ef){
                         tblSaida.setValueAt("Aceitou", z, 0);
-                        teste = String.copyValueOf(sentenca);
+                        teste = String.copyValueOf(sentenca1);
                         teste = teste.substring(0, teste.length() - 1);
                         tblSaida.setValueAt(teste, z, 1);
-                        i = sentenca.length + 1;
+                        i = sentenca1.length + 1;
                         estadoAtual = estadosIniciais[0];
+                        tblSaida.setValueAt("Aceitou", z, 2);
+	                      teste2 = String.copyValueOf(sentenca2);
+	                      teste2 = teste2.substring(0, teste2.length() - 1);
+	                      tblSaida.setValueAt(teste2, z, 3);
+	                      i = sentenca2.length + 1;
+	                      estadoAtual2 = estadosIniciais[0];
+                        break;
                     }else{
                         tblSaida.setValueAt("Recusou", z, 0);
-                        i = sentenca.length + 1;
+                        tblSaida.setValueAt("Erro", z, 1);
+                        i = sentenca1.length + 1;
                         estadoAtual = estadosIniciais[0];
+                        tblSaida.setValueAt("Recusou", z, 2);
+	                      tblSaida.setValueAt("Erro", z, 3);
+	                      i = sentenca2.length + 1;
+	                      estadoAtual2 = estadosIniciais[0];
                     }
+                    
+                    
+	                  
                 }
-            }
+            }           
         }
     }
-    
 
     
-    public String leituraTblSentencas(int linha){
-        String sentencas = tblSentecas.getValueAt(linha, 0).toString();
+    public String leituraTblSentencas(int linha, int coluna){
+        String sentencas = tblSentecas.getValueAt(linha, coluna).toString();
         return sentencas;
     }
     

@@ -50,9 +50,13 @@ public class UmaFita extends javax.swing.JFrame {
         jLabel_transicoes = new javax.swing.JLabel();
         jLabel_transicoes.setForeground(Color.WHITE);
         txtEstados = new javax.swing.JTextField();
+        txtEstados.setText("q0,q1,q2,q3");
         txtAlfabeto = new javax.swing.JTextField();
+        txtAlfabeto.setText("1,M,F");
         txtEstadoInicial = new javax.swing.JTextField();
+        txtEstadoInicial.setText("q0");
         txtEstadoFinal = new javax.swing.JTextField();
+        txtEstadoFinal.setText("q3");
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTransicoes = new javax.swing.JTable();
         btnMaisLinhaTransicoes = new javax.swing.JButton();
@@ -102,11 +106,12 @@ public class UmaFita extends javax.swing.JFrame {
         tblTransicoes.setFont(new java.awt.Font("Arial", 0, 10)); // NOI18N
         tblTransicoes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"","","","",""}/*,
-                {"","","","",""},
-                {"","","","",""},
-                {"","","","",""},
-                {"","","","",""}*/
+                {"q0","1","q0","1","R"},
+                {"q0","M","q1","1","R"},
+                {"q1","1","q1","1","R"},
+                {"q1","F","q2","&","L"},
+                {"q2","1","q2","&","S"},
+                {"q2","&","q3","&","S"}
             },
             new String [] {
                 "Estado atual", "Caractere de leitura", "Estado futuro", "Caractere de escrita", "Movimento do cabeçote"
@@ -128,7 +133,7 @@ public class UmaFita extends javax.swing.JFrame {
 
         tblSentecas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {""}
+                {"111M111F"}
             },
             new String [] {
                 "Sentencas"
@@ -433,6 +438,7 @@ public class UmaFita extends javax.swing.JFrame {
                         estadoAtual = estadosIniciais[0];
                     }else{
                         tblSaida.setValueAt("Recusou", z, 0);
+                        tblSaida.setValueAt("Erro", z, 1);
                         i = sentenca.length + 1;
                         estadoAtual = estadosIniciais[0];
                     }
